@@ -59,7 +59,7 @@ function enableCam(event) {
     }
     // getUsermedia parameters.
     const constraints = {
-        video: true
+        video: { facingMode: "environment" } // Đoạn code cho check camera sau 
     };
     // Activate the webcam stream.
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
