@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gesture Recognizer</title>
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    
+</head>
+<body>
+    <h1>Recognize hand gestures using the MediaPipe HandGestureRecognizer task</h1>
+    <section id="demos">
+        <h2>Webcam continuous hand gesture detection</h2>
+        <p>Use your hand to make gestures in front of the camera to get gesture classification. Click <b>enable webcam</b> below and grant access to the webcam if prompted.</p>
+        <div id="liveView" class="videoView">
+            <button id="webcamButton" class="mdc-button mdc-button--raised">
+                <span class="mdc-button__ripple"></span>
+                <span class="mdc-button__label">ENABLE WEBCAM</span>
+            </button>
+            <div style="position: relative;">
+                <video id="webcam" autoplay playsinline></video>
+                <canvas class="output_canvas" id="output_canvas" width="1280" height="720" style="position: absolute; left: 0px; top: 0px;"></canvas>
+                <p id='gesture_output' class="output"></p>
+            </div>
+        </div>
+    </section>
+    <script src="{{ url_for('static', filename='dist/bundle.js') }}"></script>
+</body>
+</html>
