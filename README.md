@@ -5,10 +5,10 @@ This guide will help you set up the Gesture Recognition for Web Flask project on
 ## Installation Steps
 
 1. **Clone the repository**
+   Clones the project repository to your local machine.
    ```bash
    git clone https://github.com/LeDat98/Gesture_recognition_for_Web_Flask.git
    ```
-Clones the project repository to your local machine.
 2.**Navigate to the project directory**
    ```bash
    cd Gesture_recognition_for_Web_Flask
@@ -34,6 +34,7 @@ Clones the project repository to your local machine.
    wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
    ```
 7.**Source your shell configuration**
+   Reloads your shell configuration.
    ```bash
    source ~/.bashrc
    ```
@@ -41,7 +42,7 @@ Clones the project repository to your local machine.
    ```bash
    source ~/.zshrc
    ```
-   Reloads your shell configuration.
+   
 8.**nvm install v18.17.0**
    Installs Node.js version 18.17.0. or more
    ```bash
