@@ -1,15 +1,20 @@
+// Nhập các thư viện cần thiết từ @mediapipe/tasks-vision
 import { GestureRecognizer, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
 
+// Lấy phần tử HTML để hiển thị các demo
 const demosSection = document.getElementById("demos");
+// Khởi tạo biến cho nhận dạng cử chỉ
 let gestureRecognizer;
+// Đặt chế độ hoạt động mặc định là ảnh
 let runningMode = "IMAGE";
 let enableWebcamButton;
 let webcamRunning = false;
+// Đặt kích thước cho video
 const videoHeight = "360px";
 const videoWidth = "480px";
-// Before we can use HandLandmarker class we must wait for it to finish
-// loading. Machine Learning models can be large and take a moment to
-// get everything needed to run.
+
+// Hàm tạo nhận dạng cử chỉ, cần đợi nó tải xong trước khi sử dụng
+// vì các mô hình Machine Learning có thể lớn và mất thời gian để tải
 const createGestureRecognizer = async () => {
     const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
     gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
@@ -22,20 +27,19 @@ const createGestureRecognizer = async () => {
     demosSection.classList.remove("invisible");
 };
 createGestureRecognizer();
-//orignal task file url https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task
-/********************************************************************
-// Demo 2: Continuously grab image from webcam stream and detect it.
-********************************************************************/
+
+// Lấy các phần tử HTML để xử lý video và hiển thị kết quả
 const video = document.getElementById("webcam");
 const canvasElement = document.getElementById("output_canvas");
 const canvasCtx = canvasElement.getContext("2d");
 const gestureOutput = document.getElementById("gesture_output");
-// Check if webcam access is supported.
+
+// Hàm kiểm tra xem trình duyệt có hỗ trợ truy cập webcam không
 function hasGetUserMedia() {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
-// If webcam supported, add event listener to button for when user
-// wants to activate it.
+
+// Nếu hỗ trợ webcam, thêm sự kiện cho nút kích hoạt webcam
 if (hasGetUserMedia()) {
     enableWebcamButton = document.getElementById("webcamButton");
     enableWebcamButton.addEventListener("click", enableCam);
@@ -43,7 +47,8 @@ if (hasGetUserMedia()) {
 else {
     console.warn("getUserMedia() is not supported by your browser");
 }
-// Enable the live webcam view and start detection.
+
+// Hàm kích hoạt xem trực tiếp qua webcam và bắt đầu phát hiện
 function enableCam(event) {
     if (!gestureRecognizer) {
         alert("Please wait for gestureRecognizer to load");
@@ -57,21 +62,22 @@ function enableCam(event) {
         webcamRunning = true;
         enableWebcamButton.innerText = "DISABLE PREDICTIONS";
     }
-    // getUsermedia parameters.
+    // Tham số cho getUserMedia
     const constraints = {
-        video: { facingMode: "environment" } // Đoạn code cho check camera sau 
+        video: { facingMode: "environment" } // Sử dụng camera sau
     };
-    // Activate the webcam stream.
+    // Kích hoạt dòng video từ webcam
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
         video.srcObject = stream;
         video.addEventListener("loadeddata", predictWebcam);
     });
 }
+
+// Hàm dự đoán cử chỉ từ video webcam
 let lastVideoTime = -1;
 let results = undefined;
 async function predictWebcam() {
-    const webcamElement = document.getElementById("webcam");
-    // Now let's start detecting the stream.
+    // Bắt đầu phát hiện trong luồng video
     if (runningMode === "IMAGE") {
         runningMode = "VIDEO";
         await gestureRecognizer.setOptions({ runningMode: "VIDEO" });
@@ -81,14 +87,15 @@ async function predictWebcam() {
         lastVideoTime = video.currentTime;
         results = gestureRecognizer.recognizeForVideo(video, nowInMs);
     }
+    // Vẽ kết quả lên canvas
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     const drawingUtils = new DrawingUtils(canvasCtx);
     canvasElement.style.height = videoHeight;
-    webcamElement.style.height = videoHeight;
+    video.style.height = videoHeight;
     canvasElement.style.width = videoWidth;
-    webcamElement.style.width = videoWidth;
-    if (results.landmarks) {
+    video.style.width = videoWidth;
+    if (results && results.landmarks) {
         for (const landmarks of results.landmarks) {
             drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
                 color: "#00FF00",
@@ -101,7 +108,8 @@ async function predictWebcam() {
         }
     }
     canvasCtx.restore();
-    if (results.gestures.length > 0) {
+    // Hiển thị thông tin cử chỉ nếu có
+    if (results && results.gestures.length > 0) {
         gestureOutput.style.display = "block";
         gestureOutput.style.width = videoWidth;
         const categoryName = results.gestures[0][0].categoryName;
@@ -112,7 +120,7 @@ async function predictWebcam() {
     else {
         gestureOutput.style.display = "none";
     }
-    // Call this function again to keep predicting when the browser is ready.
+    // Tiếp tục gọi hàm này để duy trì việc dự đoán khi trình duyệt sẵn sàng
     if (webcamRunning === true) {
         window.requestAnimationFrame(predictWebcam);
     }
