@@ -67,4 +67,8 @@ After installation, activate your Python virtual environment and start the Flask
    ```bash
    python3 app.py
    ```
+## rebuild for fixed
+```bash
+   npm run build
+```
 
