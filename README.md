@@ -57,6 +57,10 @@ This guide will help you set up the Gesture Recognition for Web Flask project on
    ```bash
    npm install
    ```
+11.**Install @mediapipe/tasks-vision**
+   ```bash
+   npm install @mediapipe/tasks-vision
+   ```
 ## Run Gesture Recognition app
 After installation, activate your Python virtual environment and start the Flask application using:
 **Run this commd**
